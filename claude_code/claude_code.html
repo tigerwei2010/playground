@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn to Code with Claude</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+       .hero {
+            background: url('https://via.placeholder.com/1500x500') no-repeat center center/cover;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+        }
+       .hero h1 {
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+        .section {
+            background: #fff;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 0.5rem;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f3;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .benefit-item {
+            background: #e2e2e8;
+            padding: 1.5rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .benefit-item img {
+            max-width: 60px;
+            margin-bottom: 1rem;
+        }
+        .benefit-item h3 {
+            margin-top: 0;
+        }
+        .languages-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding-top: 1rem;
+        }
+        .language-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+       .language-logo:hover {
+            transform: scale(1.1);
+        }
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            background: #333;
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Learn to Code with Claude</h1>
+    </header>
+
+    <section class="hero">
+        <h1>Your AI Coding Partner</h1>
+    </section>
+
+    <div class="container">
+        <div class="section" id="intro">
+            <h2>What is Claude Code?</h2>
+            <p>
+                Claude Code is an AI-powered coding assistant from Anthropic that operates directly within your terminal. It's designed to help developers write, understand, and improve code using natural language prompts. Think of it as a pair programmer that's always available to help you with everything from generating boilerplate code to debugging complex issues.
+            </p>
+        </div>
+
+        <div class="section" id="why-claude">
+            <h2>Why Use Claude Code?</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <img src="https://via.placeholder.com/60x60" alt="Productivity Icon">
+                    <h3>Boost Productivity</h3>
+                    <p>Automate repetitive coding tasks and generate boilerplate code in seconds, freeing you up to focus on more complex problem-solving.</p>
+                </div>
+                <div class="benefit-item">
+                    <img src="https://via.placeholder.com/60x60" alt="Code Quality Icon">
+                    <h3>Enhance Code Quality</h3>
+                    <p>Get real-time suggestions based on best practices to improve the maintainability and readability of your code.</p>
+                </div>
+                <div class="benefit-item">
+                    <img src="https://via.placeholder.com/60x60" alt="Debugging Icon">
+                    <h3>Accelerate Debugging</h3>
+                    <p>Describe a bug or paste an error message, and Claude will analyze your code to suggest fixes.</p>
+                </div>
+                <div class="benefit-item">
+                    <img src="https://via.placeholder.com/60x60" alt="Workflow Icon">
+                    <h3>Seamless Workflow</h3>
+                    <p>Works within your existing terminal and integrates with popular IDEs like VS Code, so you don't have to switch contexts.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="getting-started">
+            <h2>Getting Started</h2>
+            <p>Setting up Claude Code is a straightforward process. Here’s how you can get started:</p>
+            <ol>
+                <li><strong>Install Node.js:</strong> Ensure you have Node.js version 18 or newer installed on your system.</li>
+                <li>
+                    <strong>Install Claude Code via npm:</strong> Open your terminal and run the following command:
+                    <div class="code-block">
+                        npm install -g @anthropic-ai/claude-code
+                    </div>
+                </li>
+                <li>
+                    <strong>Navigate to Your Project:</strong> Change your directory to the project you want to work on.
+                    <div class="code-block">
+                        cd your-awesome-project
+                    </div>
+                </li>
+                <li>
+                    <strong>Launch Claude:</strong> Start the Claude Code interactive session.
+                    <div class="code-block">
+                        claude
+                    </div>
+                </li>
+                 <li><strong>Authentication:</strong> The first time you launch, you will be guided through an authentication process to link your Anthropic account.</li>
+            </ol>
+             <p>For Windows users, it is recommended to use Windows Subsystem for Linux (WSL).</p>
+        </div>
+
+        <div class="section" id="how-to-use">
+            <h2>How to Use Claude Code</h2>
+            <p>Once you're in the Claude Code session, you can start giving it instructions in plain English. Here are a few examples of what you can do:</p>
+
+            <h3>Generate a Function</h3>
+            <p>You can ask Claude to create a function for you. For example:</p>
+            <div class="code-block">
+                > create a Python function that takes a list of numbers and returns the sum.
+            </div>
+
+            <h3>Debug Your Code</h3>
+            <p>If you have a bug, describe the problem or paste the error message:</p>
+            <div class="code-block">
+                > I'm getting a 'TypeError: cannot read property 'map' of undefined' in my JavaScript file. Can you help me fix it?
+            </div>
+
+            <h3>Refactor Code</h3>
+            <p>Claude can help you improve the structure and readability of your code.</p>
+            <div class="code-block">
+                > Refactor the `calculate_total` function in `main.py` to be more efficient.
+            </div>
+
+            <h3>Write Documentation</h3>
+            <p>You can also ask Claude to add comments or write documentation for your code.</p>
+            <div class="code-block">
+                > Add a docstring to the `is_palindrome` function in `utils.py` explaining what it does, its parameters, and what it returns.
+            </div>
+        </div>
+
+        <div class="section" id="supported-languages">
+            <h2>Supported Languages</h2>
+            <p>Claude has a broad knowledge of many programming languages, with a particular strength in Python. Some of the commonly supported languages include:</p>
+            <div class="languages-grid">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg" alt="Ruby" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg" alt="Swift" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" alt="Kotlin" class="language-logo">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL" class="language-logo">
+            </div>
+        </div>
+
+        <div class="section" id="advanced-tips">
+            <h2>Advanced Tips for Power Users</h2>
+            <ul>
+                <li><strong>Use `CLAUDE.md` for Project Context:</strong> Create a `CLAUDE.md` file in your project's root directory to provide Claude with specific guidelines, important commands, and an overview of your project. Claude will automatically read this file for better context.</li>
+                <li><strong>Create Custom Slash Commands:</strong> You can create your own slash commands for repetitive tasks by adding markdown files in the `.claude/commands` directory.</li>
+                <li><strong>Multi-Claude Workflows:</strong> For complex tasks, you can use multiple Claude instances. For example, one to write code and another to review or test it.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Introduction to Claude Code</p>
+    </footer>
+
+</body>
+</html>
