@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doge 2048 - Much Fun, Very Game!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE066, #FF6B35);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FF6B35;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .score-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            min-width: 100px;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .game-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .grid-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background: #bbada0;
+            border-radius: 10px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .grid-cell {
+            background: rgba(238, 228, 218, 0.35);
+            border-radius: 5px;
+        }
+
+        .tile {
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            transition: all 0.15s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Doge face progression with darker backgrounds */
+        .tile-2 { background: #ffeaa7; }
+        .tile-4 { background: #fdcb6e; }
+        .tile-8 { background: #e17055; }
+        .tile-16 { background: #d63031; color: white; }
+        .tile-32 { background: #a29bfe; color: white; }
+        .tile-64 { background: #6c5ce7; color: white; }
+        .tile-128 { background: #fd79a8; color: white; }
+        .tile-256 { background: #e84393; color: white; }
+        .tile-512 { background: #00b894; color: white; }
+        .tile-1024 { background: #00a085; color: white; }
+        .tile-2048 { background: #2d3436; color: white; }
+        .tile-4096 { background: #636e72; color: white; }
+
+        .controls {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+        }
+
+        .new-game-btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+            font-family: inherit;
+        }
+
+        .new-game-btn:hover {
+            background: #e55a2b;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 15px;
+            z-index: 100;
+        }
+
+        .game-over.show {
+            display: flex;
+        }
+
+        .game-over-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                width: 320px;
+                height: 320px;
+            }
+            .tile {
+                width: 68px;
+                height: 68px;
+                font-size: 2rem;
+            }
+            .title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">🐕 DOGE 2048 🐕</h1>
+        <p class="subtitle">Much slide, very combine, wow!</p>
+        <div class="score-container">
+            <div class="score-box">
+                <div class="score-label">SCORE</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-box">
+                <div class="score-label">BEST</div>
+                <div class="score-value" id="best">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="grid-container" id="grid">
+            <!-- Grid cells -->
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+        </div>
+        <div class="game-over" id="gameOver">
+            <div class="game-over-text">Much Game Over!</div>
+            <button class="new-game-btn" onclick="newGame()">Try Again, Doge!</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <p>Use arrow keys or WASD to move tiles</p>
+        <p>Swipe on mobile devices</p>
+        <button class="new-game-btn" onclick="newGame()">New Game</button>
+    </div>
+
+    <script>
+        class Doge2048 {
+            constructor() {
+                this.grid = Array(4).fill().map(() => Array(4).fill(0));
+                this.score = 0;
+                this.best = parseInt(localStorage.getItem('doge2048-best') || '0');
+                this.doges = {
+                    2: '🐕',     // Basic doge
+                    4: '🐶',     // Puppy doge
+                    8: '😎',     // Cool doge
+                    16: '🤓',    // Smart doge
+                    32: '🥳',    // Party doge
+                    64: '😍',    // Love doge
+                    128: '🤩',   // Star doge
+                    256: '👑',   // King doge
+                    512: '🔥',   // Fire doge
+                    1024: '💎',  // Diamond doge
+                    2048: '🚀',  // Space doge
+                    4096: '👹'   // Ultimate doge
+                };
+                this.init();
+            }
+
+            init() {
+                this.updateDisplay();
+                this.addRandomTile();
+                this.addRandomTile();
+                this.updateDisplay();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key)) {
+                        e.preventDefault();
+                        this.handleMove(e.key);
+                    }
+                });
+
+                // Touch controls
+                let startX, startY;
+                const grid = document.getElementById('grid');
+                
+                grid.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+
+                grid.addEventListener('touchend', (e) => {
+                    if (!startX || !startY) return;
+                    
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+                    
+                    const diffX = startX - endX;
+                    const diffY = startY - endY;
+                    
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        // Horizontal swipe
+                        if (diffX > 30) this.move('left');
+                        else if (diffX < -30) this.move('right');
+                    } else {
+                        // Vertical swipe
+                        if (diffY > 30) this.move('up');
+                        else if (diffY < -30) this.move('down');
+                    }
+                    
+                    startX = startY = null;
+                }, { passive: true });
+            }
+
+            handleMove(key) {
+                const moves = {
+                    'ArrowUp': 'up', 'w': 'up',
+                    'ArrowDown': 'down', 's': 'down',
+                    'ArrowLeft': 'left', 'a': 'left',
+                    'ArrowRight': 'right', 'd': 'right'
+                };
+                this.move(moves[key]);
+            }
+
+            move(direction) {
+                const oldGrid = JSON.stringify(this.grid);
+                
+                switch(direction) {
+                    case 'up': this.moveUp(); break;
+                    case 'down': this.moveDown(); break;
+                    case 'left': this.moveLeft(); break;
+                    case 'right': this.moveRight(); break;
+                }
+
+                if (JSON.stringify(this.grid) !== oldGrid) {
+                    this.addRandomTile();
+                    this.updateDisplay();
+                    
+                    if (this.isGameOver()) {
+                        document.getElementById('gameOver').classList.add('show');
+                    }
+                }
+            }
+
+            moveLeft() {
+                for (let row = 0; row < 4; row++) {
+                    let arr = this.grid[row].filter(val => val !== 0);
+                    for (let i = 0; i < arr.length - 1; i++) {
+                        if (arr[i] === arr[i + 1]) {
+                            arr[i] *= 2;
+                            this.score += arr[i];
+                            arr[i + 1] = 0;
+                        }
+                    }
+                    arr = arr.filter(val => val !== 0);
+                    while (arr.length < 4) arr.push(0);
+                    this.grid[row] = arr;
+                }
+            }
+
+            moveRight() {
+                for (let row = 0; row < 4; row++) {
+                    let arr = this.grid[row].filter(val => val !== 0);
+                    for (let i = arr.length - 1; i > 0; i--) {
+                        if (arr[i] === arr[i - 1]) {
+                            arr[i] *= 2;
+                            this.score += arr[i];
+                            arr[i - 1] = 0;
+                        }
+                    }
+                    arr = arr.filter(val => val !== 0);
+                    while (arr.length < 4) arr.unshift(0);
+                    this.grid[row] = arr;
+                }
+            }
+
+            moveUp() {
+                for (let col = 0; col < 4; col++) {
+                    let arr = [];
+                    for (let row = 0; row < 4; row++) {
+                        if (this.grid[row][col] !== 0) arr.push(this.grid[row][col]);
+                    }
+                    for (let i = 0; i < arr.length - 1; i++) {
+                        if (arr[i] === arr[i + 1]) {
+                            arr[i] *= 2;
+                            this.score += arr[i];
+                            arr[i + 1] = 0;
+                        }
+                    }
+                    arr = arr.filter(val => val !== 0);
+                    while (arr.length < 4) arr.push(0);
+                    for (let row = 0; row < 4; row++) {
+                        this.grid[row][col] = arr[row];
+                    }
+                }
+            }
+
+            moveDown() {
+                for (let col = 0; col < 4; col++) {
+                    let arr = [];
+                    for (let row = 0; row < 4; row++) {
+                        if (this.grid[row][col] !== 0) arr.push(this.grid[row][col]);
+                    }
+                    for (let i = arr.length - 1; i > 0; i--) {
+                        if (arr[i] === arr[i - 1]) {
+                            arr[i] *= 2;
+                            this.score += arr[i];
+                            arr[i - 1] = 0;
+                        }
+                    }
+                    arr = arr.filter(val => val !== 0);
+                    while (arr.length < 4) arr.unshift(0);
+                    for (let row = 0; row < 4; row++) {
+                        this.grid[row][col] = arr[row];
+                    }
+                }
+            }
+
+            addRandomTile() {
+                const emptyCells = [];
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (this.grid[row][col] === 0) {
+                            emptyCells.push({ row, col });
+                        }
+                    }
+                }
+
+                if (emptyCells.length > 0) {
+                    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                    this.grid[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+                }
+            }
+
+            updateDisplay() {
+                const grid = document.getElementById('grid');
+                const tiles = grid.querySelectorAll('.tile');
+                tiles.forEach(tile => tile.remove());
+
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (this.grid[row][col] !== 0) {
+                            const tile = document.createElement('div');
+                            tile.className = `tile tile-${this.grid[row][col]}`;
+                            tile.style.left = `${col * 95 + 10}px`;
+                            tile.style.top = `${row * 95 + 10}px`;
+                            tile.textContent = this.doges[this.grid[row][col]] || '🐕';
+                            grid.appendChild(tile);
+                        }
+                    }
+                }
+
+                document.getElementById('score').textContent = this.score;
+                if (this.score > this.best) {
+                    this.best = this.score;
+                    localStorage.setItem('doge2048-best', this.best);
+                }
+                document.getElementById('best').textContent = this.best;
+            }
+
+            isGameOver() {
+                // Check for empty cells
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (this.grid[row][col] === 0) return false;
+                    }
+                }
+
+                // Check for possible merges
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        const current = this.grid[row][col];
+                        if ((row < 3 && current === this.grid[row + 1][col]) ||
+                            (col < 3 && current === this.grid[row][col + 1])) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            reset() {
+                this.grid = Array(4).fill().map(() => Array(4).fill(0));
+                this.score = 0;
+                document.getElementById('gameOver').classList.remove('show');
+                this.addRandomTile();
+                this.addRandomTile();
+                this.updateDisplay();
+            }
+        }
+
+        let game;
+
+        function newGame() {
+            game = new Doge2048();
+        }
+
+        // Start the game
+        window.addEventListener('load', () => {
+            newGame();
+        });
+    </script>
+</body>
+</html>
