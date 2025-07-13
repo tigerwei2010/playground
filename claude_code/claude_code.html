@@ -3,151 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn to Code with Claude</title>
+    <title>Claude Code - Your AI Coding Assistant</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #004E98;
+            --accent-color: #FFD23F;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --bg-light: #F8F9FA;
+            --bg-white: #FFFFFF;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            box-sizing: border-box;
         }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 2rem 0;
-            text-align: center;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            scroll-behavior: smooth;
         }
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
         }
-       .hero {
-            background: url('https://via.placeholder.com/1500x500') no-repeat center center/cover;
-            height: 50vh;
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            color: #fff;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            background: var(--gradient-primary);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-        }
-       .hero h1 {
-            font-size: 3.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .container {
-            width: 80%;
-            margin: auto;
+            color: white;
+            position: relative;
             overflow: hidden;
-            padding: 2rem 0;
         }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--text-dark);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
         .section {
-            background: #fff;
-            padding: 2rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: var(--bg-white);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
         h2 {
-            color: #333;
-            border-bottom: 2px solid #333;
-            padding-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1rem;
         }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem 0;
+        }
+
         .code-block {
-            background: #2d2d2d;
-            color: #f8f8f3;
-            padding: 1rem;
-            border-radius: 5px;
+            background: #1a1a1a;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 12px;
             overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            position: relative;
+            border-left: 4px solid var(--primary-color);
         }
+
+        .code-block::before {
+            content: '$ ';
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
+
         .benefit-item {
-            background: #e2e2e8;
-            padding: 1.5rem;
-            border-radius: 5px;
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 16px;
             text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
-        .benefit-item img {
-            max-width: 60px;
+
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--primary-color);
+        }
+
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .benefit-item h3 {
+            color: var(--text-dark);
             margin-bottom: 1rem;
         }
-        .benefit-item h3 {
-            margin-top: 0;
-        }
+
         .languages-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            padding-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
+
+        .language-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .language-item:hover {
+            background: var(--bg-white);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-light);
+        }
+
         .language-logo {
             width: 60px;
             height: 60px;
             object-fit: contain;
-            transition: transform 0.3s;
+            margin-bottom: 0.5rem;
         }
-       .language-logo:hover {
-            transform: scale(1.1);
+
+        .language-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-dark);
         }
-        footer {
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
             text-align: center;
-            padding: 1rem 0;
-            background: #333;
-            color: #fff;
-            position: relative;
-            bottom: 0;
-            width: 100%;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--bg-white);
+            color: var(--primary-color);
+            box-shadow: var(--shadow-light);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 2rem 1rem;
+            }
+            
+            .section {
+                padding: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Learn to Code with Claude</h1>
-    </header>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Claude Code</div>
+            <ul class="nav-links">
+                <li><a href="#intro">Features</a></li>
+                <li><a href="#getting-started">Get Started</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="#advanced-tips">Advanced</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <section class="hero">
-        <h1>Your AI Coding Partner</h1>
+        <div class="hero-content">
+            <h1>Your AI Coding Partner</h1>
+            <p>Claude Code transforms how you write, debug, and understand code. Work smarter with AI-powered assistance directly in your terminal.</p>
+            <a href="#getting-started" class="cta-button">Get Started Now</a>
+        </div>
     </section>
 
     <div class="container">
         <div class="section" id="intro">
             <h2>What is Claude Code?</h2>
             <p>
-                Claude Code is an AI-powered coding assistant from Anthropic that operates directly within your terminal. It's designed to help developers write, understand, and improve code using natural language prompts. Think of it as a pair programmer that's always available to help you with everything from generating boilerplate code to debugging complex issues.
+                Claude Code is Anthropic's revolutionary AI-powered coding assistant that operates directly within your terminal environment. Built on Claude's advanced language model, it's designed to understand your codebase context and provide intelligent assistance for complex software development tasks.
             </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Context-Aware Intelligence</h3>
+                    </div>
+                    <p>Claude Code understands your entire project structure, dependencies, and coding patterns to provide contextually relevant suggestions and solutions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Real-Time Collaboration</h3>
+                    </div>
+                    <p>Work seamlessly with Claude as your pair programming partner, getting instant feedback and suggestions as you code.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🔧</div>
+                        <h3>Multi-Language Support</h3>
+                    </div>
+                    <p>Expertly handles 50+ programming languages with deep understanding of frameworks, libraries, and best practices.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Precision Problem Solving</h3>
+                    </div>
+                    <p>Analyzes complex bugs, suggests optimizations, and helps architect scalable solutions with detailed explanations.</p>
+                </div>
+            </div>
         </div>
 
         <div class="section" id="why-claude">
-            <h2>Why Use Claude Code?</h2>
+            <h2>Why Choose Claude Code?</h2>
             <div class="benefits-grid">
                 <div class="benefit-item">
-                    <img src="https://via.placeholder.com/60x60" alt="Productivity Icon">
-                    <h3>Boost Productivity</h3>
-                    <p>Automate repetitive coding tasks and generate boilerplate code in seconds, freeing you up to focus on more complex problem-solving.</p>
+                    <div class="benefit-icon">🚀</div>
+                    <h3>10x Productivity Boost</h3>
+                    <p>Automate repetitive tasks, generate comprehensive boilerplate code, and complete complex refactoring in minutes instead of hours. Transform your development velocity.</p>
                 </div>
                 <div class="benefit-item">
-                    <img src="https://via.placeholder.com/60x60" alt="Code Quality Icon">
-                    <h3>Enhance Code Quality</h3>
-                    <p>Get real-time suggestions based on best practices to improve the maintainability and readability of your code.</p>
+                    <div class="benefit-icon">💎</div>
+                    <h3>Enterprise-Grade Code Quality</h3>
+                    <p>Receive suggestions based on industry best practices, security standards, and performance optimizations. Maintain consistent code quality across your entire team.</p>
                 </div>
                 <div class="benefit-item">
-                    <img src="https://via.placeholder.com/60x60" alt="Debugging Icon">
-                    <h3>Accelerate Debugging</h3>
-                    <p>Describe a bug or paste an error message, and Claude will analyze your code to suggest fixes.</p>
+                    <div class="benefit-icon">🔍</div>
+                    <h3>Advanced Debugging & Analysis</h3>
+                    <p>Instantly analyze stack traces, identify root causes, and get step-by-step solutions. Claude understands complex error patterns and edge cases.</p>
                 </div>
                 <div class="benefit-item">
-                    <img src="https://via.placeholder.com/60x60" alt="Workflow Icon">
-                    <h3>Seamless Workflow</h3>
-                    <p>Works within your existing terminal and integrates with popular IDEs like VS Code, so you don't have to switch contexts.</p>
+                    <div class="benefit-icon">🔄</div>
+                    <h3>Seamless IDE Integration</h3>
+                    <p>Native integration with VS Code, terminal workflows, and CI/CD pipelines. Works with your existing tools without disrupting your development environment.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎓</div>
+                    <h3>Continuous Learning</h3>
+                    <p>Learn new frameworks, APIs, and coding patterns through detailed explanations and examples. Claude adapts to your skill level and coding style.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🛡️</div>
+                    <h3>Security & Privacy First</h3>
+                    <p>Your code stays secure with enterprise-grade privacy protection. Claude Code processes locally when possible and follows strict data handling policies.</p>
                 </div>
             </div>
         </div>
@@ -180,67 +515,261 @@
              <p>For Windows users, it is recommended to use Windows Subsystem for Linux (WSL).</p>
         </div>
 
-        <div class="section" id="how-to-use">
-            <h2>How to Use Claude Code</h2>
-            <p>Once you're in the Claude Code session, you can start giving it instructions in plain English. Here are a few examples of what you can do:</p>
+        <div class="section" id="examples">
+            <h2>Claude Code in Action</h2>
+            <p>Experience the power of AI-assisted development with these real-world examples. Claude Code adapts to your coding style and project requirements.</p>
 
-            <h3>Generate a Function</h3>
-            <p>You can ask Claude to create a function for you. For example:</p>
-            <div class="code-block">
-                > create a Python function that takes a list of numbers and returns the sum.
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('code-generation')">Code Generation</button>
+                <button class="tab" onclick="showTab('debugging')">Debugging</button>
+                <button class="tab" onclick="showTab('refactoring')">Refactoring</button>
+                <button class="tab" onclick="showTab('architecture')">Architecture</button>
             </div>
 
-            <h3>Debug Your Code</h3>
-            <p>If you have a bug, describe the problem or paste the error message:</p>
-            <div class="code-block">
-                > I'm getting a 'TypeError: cannot read property 'map' of undefined' in my JavaScript file. Can you help me fix it?
+            <div id="code-generation" class="tab-content active">
+                <h3>🔨 Intelligent Code Generation</h3>
+                <p>Generate complete, production-ready code with proper error handling and documentation:</p>
+                <div class="code-block">
+Create a REST API endpoint in FastAPI for user authentication with JWT tokens, input validation, and proper error responses
+                </div>
+                <p><strong>Result:</strong> Claude generates a complete FastAPI endpoint with JWT handling, Pydantic models, error handling, and security best practices - saving hours of boilerplate coding.</p>
             </div>
 
-            <h3>Refactor Code</h3>
-            <p>Claude can help you improve the structure and readability of your code.</p>
-            <div class="code-block">
-                > Refactor the `calculate_total` function in `main.py` to be more efficient.
+            <div id="debugging" class="tab-content">
+                <h3>🔍 Advanced Debugging</h3>
+                <p>Paste error messages or describe issues for instant analysis and solutions:</p>
+                <div class="code-block">
+I'm getting "RecursionError: maximum recursion depth exceeded" in my binary tree traversal. The function works for small trees but fails on larger ones.
+                </div>
+                <p><strong>Result:</strong> Claude analyzes the recursion pattern, identifies the issue, and provides both a fixed recursive solution and an iterative alternative with performance comparisons.</p>
             </div>
 
-            <h3>Write Documentation</h3>
-            <p>You can also ask Claude to add comments or write documentation for your code.</p>
-            <div class="code-block">
-                > Add a docstring to the `is_palindrome` function in `utils.py` explaining what it does, its parameters, and what it returns.
+            <div id="refactoring" class="tab-content">
+                <h3>♻️ Smart Refactoring</h3>
+                <p>Improve code quality, performance, and maintainability:</p>
+                <div class="code-block">
+Refactor this 200-line React component to use custom hooks, extract reusable logic, and improve performance with memoization
+                </div>
+                <p><strong>Result:</strong> Claude breaks down the component into smaller, reusable pieces, creates custom hooks, optimizes re-renders, and maintains existing functionality while improving code organization.</p>
+            </div>
+
+            <div id="architecture" class="tab-content">
+                <h3>🏗️ Architecture Design</h3>
+                <p>Get guidance on system design and architectural decisions:</p>
+                <div class="code-block">
+Design a microservices architecture for an e-commerce platform that handles 100k+ users, needs real-time inventory updates, and requires payment processing
+                </div>
+                <p><strong>Result:</strong> Claude provides a comprehensive architecture diagram, technology recommendations, service boundaries, communication patterns, and deployment strategies with scalability considerations.</p>
             </div>
         </div>
 
         <div class="section" id="supported-languages">
-            <h2>Supported Languages</h2>
-            <p>Claude has a broad knowledge of many programming languages, with a particular strength in Python. Some of the commonly supported languages include:</p>
+            <h2>50+ Languages & Frameworks</h2>
+            <p>Claude Code provides expert-level assistance across all major programming languages, frameworks, and technologies. From modern web development to systems programming and data science.</p>
             <div class="languages-grid">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg" alt="Ruby" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg" alt="Swift" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" alt="Kotlin" class="language-logo">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL" class="language-logo">
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="language-logo">
+                    <span class="language-name">Python</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="language-logo">
+                    <span class="language-name">JavaScript</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" class="language-logo">
+                    <span class="language-name">TypeScript</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" class="language-logo">
+                    <span class="language-name">React</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" class="language-logo">
+                    <span class="language-name">Node.js</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="language-logo">
+                    <span class="language-name">Java</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++" class="language-logo">
+                    <span class="language-name">C++</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" class="language-logo">
+                    <span class="language-name">C#</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go" class="language-logo">
+                    <span class="language-name">Go</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-plain.svg" alt="Rust" class="language-logo">
+                    <span class="language-name">Rust</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg" alt="Ruby" class="language-logo">
+                    <span class="language-name">Ruby</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP" class="language-logo">
+                    <span class="language-name">PHP</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg" alt="Swift" class="language-logo">
+                    <span class="language-name">Swift</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" alt="Kotlin" class="language-logo">
+                    <span class="language-name">Kotlin</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" class="language-logo">
+                    <span class="language-name">Docker</span>
+                </div>
+                <div class="language-item">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes" class="language-logo">
+                    <span class="language-name">Kubernetes</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; padding: 2rem; background: var(--bg-light); border-radius: 12px;">
+                <h3>🎯 Specialized Expertise</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div><strong>Web Development:</strong> React, Vue, Angular, Next.js, Django, Flask</div>
+                    <div><strong>Mobile:</strong> React Native, Flutter, iOS, Android</div>
+                    <div><strong>Cloud:</strong> AWS, GCP, Azure, Terraform, CloudFormation</div>
+                    <div><strong>Data Science:</strong> pandas, NumPy, TensorFlow, PyTorch</div>
+                    <div><strong>DevOps:</strong> CI/CD, Docker, Kubernetes, Infrastructure as Code</div>
+                    <div><strong>Databases:</strong> PostgreSQL, MongoDB, Redis, Elasticsearch</div>
+                </div>
             </div>
         </div>
 
         <div class="section" id="advanced-tips">
-            <h2>Advanced Tips for Power Users</h2>
-            <ul>
-                <li><strong>Use `CLAUDE.md` for Project Context:</strong> Create a `CLAUDE.md` file in your project's root directory to provide Claude with specific guidelines, important commands, and an overview of your project. Claude will automatically read this file for better context.</li>
-                <li><strong>Create Custom Slash Commands:</strong> You can create your own slash commands for repetitive tasks by adding markdown files in the `.claude/commands` directory.</li>
-                <li><strong>Multi-Claude Workflows:</strong> For complex tasks, you can use multiple Claude instances. For example, one to write code and another to review or test it.</li>
-            </ul>
+            <h2>Advanced Workflows & Pro Tips</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">📋</div>
+                        <h3>Project Context with CLAUDE.md</h3>
+                    </div>
+                    <p>Create a <code>CLAUDE.md</code> file in your project root to provide Claude with specific guidelines, important commands, architecture overview, and coding standards. Claude automatically reads this for better context-aware assistance.</p>
+                    <div class="code-block" style="margin-top: 1rem; font-size: 0.8rem;">
+# Project Setup
+npm run dev    # Start development server
+npm test       # Run test suite
+
+# Architecture
+- Frontend: React + TypeScript
+- Backend: Node.js + Express
+- Database: PostgreSQL
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Custom Slash Commands</h3>
+                    </div>
+                    <p>Create your own slash commands for repetitive tasks by adding markdown files in the <code>.claude/commands</code> directory. Automate common workflows with personalized commands.</p>
+                    <div class="code-block" style="margin-top: 1rem; font-size: 0.8rem;">
+/setup-component ComponentName
+/deploy staging
+/run-tests unit
+/review-pr branch-name
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Multi-Claude Workflows</h3>
+                    </div>
+                    <p>Use multiple Claude sessions for complex tasks: one for writing code, another for reviewing, and a third for testing. Create sophisticated development pipelines with specialized AI assistants.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Context Management</h3>
+                    </div>
+                    <p>Use the <code>/memory</code> command to save important project information, decisions, and patterns. Claude remembers your preferences and adapts to your team's coding style over time.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">🔗</div>
+                        <h3>CI/CD Integration</h3>
+                    </div>
+                    <p>Integrate Claude Code with your CI/CD pipeline using GitHub Actions. Automatically review pull requests, generate documentation, and suggest optimizations before deployment.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon">👥</div>
+                        <h3>Team Collaboration</h3>
+                    </div>
+                    <p>Share Claude Code configurations across your team. Standardize coding practices, maintain consistent documentation, and ensure everyone follows the same architectural patterns.</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <footer>
-        <p>© 2025 Introduction to Claude Code</p>
+        <div class="footer-content">
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">Ready to transform your development workflow?</p>
+            <a href="#getting-started" class="cta-button" style="margin-bottom: 2rem; display: inline-block;">Start Coding with Claude</a>
+            <p style="opacity: 0.7;">© 2025 Claude Code - Powered by Anthropic AI</p>
+        </div>
     </footer>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
 
 </body>
 </html>
