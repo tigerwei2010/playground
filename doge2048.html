@@ -98,29 +98,100 @@
             position: absolute;
             width: 85px;
             height: 85px;
-            border-radius: 5px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
-            transition: all 0.15s ease-in-out;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden;
         }
 
-        /* Doge face progression with darker backgrounds */
-        .tile-2 { background: #ffeaa7; }
-        .tile-4 { background: #fdcb6e; }
-        .tile-8 { background: #e17055; }
-        .tile-16 { background: #d63031; color: white; }
-        .tile-32 { background: #a29bfe; color: white; }
-        .tile-64 { background: #6c5ce7; color: white; }
-        .tile-128 { background: #fd79a8; color: white; }
-        .tile-256 { background: #e84393; color: white; }
-        .tile-512 { background: #00b894; color: white; }
-        .tile-1024 { background: #00a085; color: white; }
-        .tile-2048 { background: #2d3436; color: white; }
-        .tile-4096 { background: #636e72; color: white; }
+        .tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .tile.merging {
+            animation: merge 0.3s ease-out;
+            z-index: 10;
+        }
+
+        .tile.sliding {
+            transition: all 0.2s ease-out;
+        }
+
+        @keyframes merge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .tile.new {
+            animation: pop 0.3s ease-out;
+        }
+
+        /* Enhanced doge tile backgrounds with clear progression */
+        .tile-2 { 
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            box-shadow: 0 4px 8px rgba(255, 234, 167, 0.4);
+        }
+        .tile-4 { 
+            background: linear-gradient(135deg, #ffe8a1, #fdcb6e);
+            box-shadow: 0 4px 8px rgba(253, 203, 110, 0.5);
+        }
+        .tile-8 { 
+            background: linear-gradient(135deg, #fab1a0, #e17055);
+            box-shadow: 0 4px 12px rgba(225, 112, 85, 0.6);
+        }
+        .tile-16 { 
+            background: linear-gradient(135deg, #e17055, #d63031);
+            box-shadow: 0 4px 12px rgba(214, 48, 49, 0.7);
+        }
+        .tile-32 { 
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.6);
+        }
+        .tile-64 { 
+            background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
+            box-shadow: 0 6px 16px rgba(95, 61, 196, 0.7);
+        }
+        .tile-128 { 
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            box-shadow: 0 8px 20px rgba(232, 67, 147, 0.6);
+        }
+        .tile-256 { 
+            background: linear-gradient(135deg, #e84393, #c44569);
+            box-shadow: 0 8px 20px rgba(196, 69, 105, 0.7);
+        }
+        .tile-512 { 
+            background: linear-gradient(135deg, #00b894, #00a085);
+            box-shadow: 0 8px 24px rgba(0, 160, 133, 0.6);
+        }
+        .tile-1024 { 
+            background: linear-gradient(135deg, #00a085, #008f72);
+            box-shadow: 0 10px 24px rgba(0, 143, 114, 0.7);
+        }
+        .tile-2048 { 
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            box-shadow: 0 12px 28px rgba(45, 52, 54, 0.8);
+            border: 3px solid #ddd;
+        }
+        .tile-4096 { 
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            box-shadow: 0 12px 32px rgba(45, 52, 54, 0.9);
+            border: 3px solid gold;
+        }
 
         .controls {
             text-align: center;
@@ -242,21 +313,67 @@
                 this.grid = Array(4).fill().map(() => Array(4).fill(0));
                 this.score = 0;
                 this.best = parseInt(localStorage.getItem('doge2048-best') || '0');
-                this.doges = {
-                    2: '🐕',     // Basic doge
-                    4: '🐶',     // Puppy doge
-                    8: '😎',     // Cool doge
-                    16: '🤓',    // Smart doge
-                    32: '🥳',    // Party doge
-                    64: '😍',    // Love doge
-                    128: '🤩',   // Star doge
-                    256: '👑',   // King doge
-                    512: '🔥',   // Fire doge
-                    1024: '💎',  // Diamond doge
-                    2048: '🚀',  // Space doge
-                    4096: '👹'   // Ultimate doge
+                this.audioContext = null;
+                this.setupAudio();
+                
+                // Create different Shiba Inu variations using CSS filters and transforms
+                this.dogeImages = {
+                    2: this.createDogeImage('hue-rotate(0deg) brightness(1.2) saturate(1.1)'),
+                    4: this.createDogeImage('hue-rotate(20deg) brightness(1.1) saturate(1.2)'),
+                    8: this.createDogeImage('hue-rotate(40deg) brightness(1.0) saturate(1.3) contrast(1.1)'),
+                    16: this.createDogeImage('hue-rotate(60deg) brightness(0.9) saturate(1.4) contrast(1.2)'),
+                    32: this.createDogeImage('hue-rotate(80deg) brightness(0.85) saturate(1.5) contrast(1.3)'),
+                    64: this.createDogeImage('hue-rotate(120deg) brightness(0.8) saturate(1.6) contrast(1.4)'),
+                    128: this.createDogeImage('hue-rotate(160deg) brightness(0.75) saturate(1.7) contrast(1.5)'),
+                    256: this.createDogeImage('hue-rotate(200deg) brightness(0.7) saturate(1.8) contrast(1.6)'),
+                    512: this.createDogeImage('hue-rotate(240deg) brightness(0.65) saturate(1.9) contrast(1.7)'),
+                    1024: this.createDogeImage('hue-rotate(280deg) brightness(0.6) saturate(2.0) contrast(1.8)'),
+                    2048: this.createDogeImage('hue-rotate(320deg) brightness(0.55) saturate(2.1) contrast(1.9) drop-shadow(0 0 10px gold)'),
+                    4096: this.createDogeImage('hue-rotate(360deg) brightness(0.5) saturate(2.2) contrast(2.0) drop-shadow(0 0 15px #ff6b35)')
                 };
                 this.init();
+            }
+
+            createDogeImage(filter) {
+                // Using a placeholder Shiba Inu image with filters to create variations
+                const img = document.createElement('img');
+                img.src = 'data:image/svg+xml;base64,' + btoa(`
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="face" cx="50%" cy="40%" r="60%">
+                                <stop offset="0%" style="stop-color:#FFA500"/>
+                                <stop offset="100%" style="stop-color:#FF8C00"/>
+                            </radialGradient>
+                        </defs>
+                        <!-- Doge face -->
+                        <ellipse cx="50" cy="50" rx="35" ry="30" fill="url(#face)"/>
+                        <!-- Ears -->
+                        <ellipse cx="30" cy="25" rx="8" ry="15" fill="#FF8C00" transform="rotate(-30 30 25)"/>
+                        <ellipse cx="70" cy="25" rx="8" ry="15" fill="#FF8C00" transform="rotate(30 70 25)"/>
+                        <!-- Eyes -->
+                        <ellipse cx="40" cy="45" rx="3" ry="4" fill="#000"/>
+                        <ellipse cx="60" cy="45" rx="3" ry="4" fill="#000"/>
+                        <ellipse cx="41" cy="43" rx="1" ry="1" fill="#fff"/>
+                        <ellipse cx="61" cy="43" rx="1" ry="1" fill="#fff"/>
+                        <!-- Nose -->
+                        <ellipse cx="50" cy="55" rx="2" ry="1.5" fill="#000"/>
+                        <!-- Mouth -->
+                        <path d="M 45 60 Q 50 65 55 60" stroke="#000" stroke-width="1.5" fill="none"/>
+                        <!-- Markings -->
+                        <ellipse cx="35" cy="40" rx="4" ry="3" fill="#FFB347" opacity="0.7"/>
+                        <ellipse cx="65" cy="40" rx="4" ry="3" fill="#FFB347" opacity="0.7"/>
+                    </svg>
+                `);
+                img.style.filter = filter;
+                return img.outerHTML;
+            }
+
+            setupAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
             }
 
             init() {
@@ -317,59 +434,125 @@
                 this.move(moves[key]);
             }
 
+            playSound(frequency, duration = 0.1, type = 'sine') {
+                if (!this.audioContext) return;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            playMergeSound(value) {
+                if (!this.audioContext) return;
+                
+                // Progressive sound effects - higher values = more satisfying sounds
+                const soundMap = {
+                    4: { freq: 220, duration: 0.15, type: 'triangle' },
+                    8: { freq: 260, duration: 0.18, type: 'triangle' },
+                    16: { freq: 310, duration: 0.21, type: 'square' },
+                    32: { freq: 370, duration: 0.24, type: 'square' },
+                    64: { freq: 440, duration: 0.27, type: 'sawtooth' },
+                    128: { freq: 520, duration: 0.30, type: 'sawtooth' },
+                    256: { freq: 620, duration: 0.35, type: 'sine' },
+                    512: { freq: 740, duration: 0.40, type: 'sine' },
+                    1024: { freq: 880, duration: 0.45, type: 'sine' },
+                    2048: { freq: 1050, duration: 0.50, type: 'sine' },
+                    4096: { freq: 1240, duration: 0.60, type: 'sine' }
+                };
+
+                const sound = soundMap[value] || { freq: 200, duration: 0.1, type: 'triangle' };
+                this.playSound(sound.freq, sound.duration, sound.type);
+                
+                // Add harmonics for larger values
+                if (value >= 512) {
+                    setTimeout(() => this.playSound(sound.freq * 1.5, sound.duration * 0.7), 50);
+                }
+                if (value >= 2048) {
+                    setTimeout(() => this.playSound(sound.freq * 0.5, sound.duration * 0.5), 100);
+                }
+            }
+
             move(direction) {
                 const oldGrid = JSON.stringify(this.grid);
+                let merged = false;
+                
+                // Add sliding animation class
+                document.querySelectorAll('.tile').forEach(tile => {
+                    tile.classList.add('sliding');
+                });
                 
                 switch(direction) {
-                    case 'up': this.moveUp(); break;
-                    case 'down': this.moveDown(); break;
-                    case 'left': this.moveLeft(); break;
-                    case 'right': this.moveRight(); break;
+                    case 'up': merged = this.moveUp(); break;
+                    case 'down': merged = this.moveDown(); break;
+                    case 'left': merged = this.moveLeft(); break;
+                    case 'right': merged = this.moveRight(); break;
                 }
 
                 if (JSON.stringify(this.grid) !== oldGrid) {
-                    this.addRandomTile();
-                    this.updateDisplay();
-                    
-                    if (this.isGameOver()) {
-                        document.getElementById('gameOver').classList.add('show');
-                    }
+                    setTimeout(() => {
+                        this.addRandomTile();
+                        this.updateDisplay();
+                        
+                        if (this.isGameOver()) {
+                            document.getElementById('gameOver').classList.add('show');
+                        }
+                    }, 100);
                 }
             }
 
             moveLeft() {
+                let merged = false;
                 for (let row = 0; row < 4; row++) {
                     let arr = this.grid[row].filter(val => val !== 0);
                     for (let i = 0; i < arr.length - 1; i++) {
                         if (arr[i] === arr[i + 1]) {
                             arr[i] *= 2;
                             this.score += arr[i];
+                            this.playMergeSound(arr[i]);
                             arr[i + 1] = 0;
+                            merged = true;
                         }
                     }
                     arr = arr.filter(val => val !== 0);
                     while (arr.length < 4) arr.push(0);
                     this.grid[row] = arr;
                 }
+                return merged;
             }
 
             moveRight() {
+                let merged = false;
                 for (let row = 0; row < 4; row++) {
                     let arr = this.grid[row].filter(val => val !== 0);
                     for (let i = arr.length - 1; i > 0; i--) {
                         if (arr[i] === arr[i - 1]) {
                             arr[i] *= 2;
                             this.score += arr[i];
+                            this.playMergeSound(arr[i]);
                             arr[i - 1] = 0;
+                            merged = true;
                         }
                     }
                     arr = arr.filter(val => val !== 0);
                     while (arr.length < 4) arr.unshift(0);
                     this.grid[row] = arr;
                 }
+                return merged;
             }
 
             moveUp() {
+                let merged = false;
                 for (let col = 0; col < 4; col++) {
                     let arr = [];
                     for (let row = 0; row < 4; row++) {
@@ -379,7 +562,9 @@
                         if (arr[i] === arr[i + 1]) {
                             arr[i] *= 2;
                             this.score += arr[i];
+                            this.playMergeSound(arr[i]);
                             arr[i + 1] = 0;
+                            merged = true;
                         }
                     }
                     arr = arr.filter(val => val !== 0);
@@ -388,9 +573,11 @@
                         this.grid[row][col] = arr[row];
                     }
                 }
+                return merged;
             }
 
             moveDown() {
+                let merged = false;
                 for (let col = 0; col < 4; col++) {
                     let arr = [];
                     for (let row = 0; row < 4; row++) {
@@ -400,7 +587,9 @@
                         if (arr[i] === arr[i - 1]) {
                             arr[i] *= 2;
                             this.score += arr[i];
+                            this.playMergeSound(arr[i]);
                             arr[i - 1] = 0;
+                            merged = true;
                         }
                     }
                     arr = arr.filter(val => val !== 0);
@@ -409,6 +598,48 @@
                         this.grid[row][col] = arr[row];
                     }
                 }
+                return merged;
+            }
+
+
+            updateDisplay() {
+                const grid = document.getElementById('grid');
+                const tiles = grid.querySelectorAll('.tile');
+                tiles.forEach(tile => tile.remove());
+
+                for (let row = 0; row < 4; row++) {
+                    for (let col = 0; col < 4; col++) {
+                        if (this.grid[row][col] !== 0) {
+                            const tile = document.createElement('div');
+                            tile.className = `tile tile-${this.grid[row][col]}`;
+                            tile.style.left = `${col * 95 + 10}px`;
+                            tile.style.top = `${row * 95 + 10}px`;
+                            tile.innerHTML = this.dogeImages[this.grid[row][col]] || this.dogeImages[2];
+                            
+                            // Add merge animation for newly created tiles
+                            if (this.lastMerged && this.lastMerged.includes(`${row}-${col}`)) {
+                                tile.classList.add('merging');
+                                setTimeout(() => tile.classList.remove('merging'), 300);
+                            }
+                            
+                            grid.appendChild(tile);
+                        }
+                    }
+                }
+
+                // Remove sliding class after animation
+                setTimeout(() => {
+                    document.querySelectorAll('.tile').forEach(tile => {
+                        tile.classList.remove('sliding');
+                    });
+                }, 200);
+
+                document.getElementById('score').textContent = this.score;
+                if (this.score > this.best) {
+                    this.best = this.score;
+                    localStorage.setItem('doge2048-best', this.best);
+                }
+                document.getElementById('best').textContent = this.best;
             }
 
             addRandomTile() {
@@ -424,33 +655,13 @@
                 if (emptyCells.length > 0) {
                     const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
                     this.grid[randomCell.row][randomCell.col] = Math.random() < 0.9 ? 2 : 4;
+                    
+                    // Add new tile animation
+                    setTimeout(() => {
+                        const newTile = document.querySelector(`[style*="left: ${randomCell.col * 95 + 10}px"][style*="top: ${randomCell.row * 95 + 10}px"]`);
+                        if (newTile) newTile.classList.add('new');
+                    }, 50);
                 }
-            }
-
-            updateDisplay() {
-                const grid = document.getElementById('grid');
-                const tiles = grid.querySelectorAll('.tile');
-                tiles.forEach(tile => tile.remove());
-
-                for (let row = 0; row < 4; row++) {
-                    for (let col = 0; col < 4; col++) {
-                        if (this.grid[row][col] !== 0) {
-                            const tile = document.createElement('div');
-                            tile.className = `tile tile-${this.grid[row][col]}`;
-                            tile.style.left = `${col * 95 + 10}px`;
-                            tile.style.top = `${row * 95 + 10}px`;
-                            tile.textContent = this.doges[this.grid[row][col]] || '🐕';
-                            grid.appendChild(tile);
-                        }
-                    }
-                }
-
-                document.getElementById('score').textContent = this.score;
-                if (this.score > this.best) {
-                    this.best = this.score;
-                    localStorage.setItem('doge2048-best', this.best);
-                }
-                document.getElementById('best').textContent = this.best;
             }
 
             isGameOver() {
@@ -494,6 +705,19 @@
         // Start the game
         window.addEventListener('load', () => {
             newGame();
+            
+            // Enable audio on first user interaction
+            document.addEventListener('click', () => {
+                if (game && game.audioContext && game.audioContext.state === 'suspended') {
+                    game.audioContext.resume();
+                }
+            }, { once: true });
+            
+            document.addEventListener('keydown', () => {
+                if (game && game.audioContext && game.audioContext.state === 'suspended') {
+                    game.audioContext.resume();
+                }
+            }, { once: true });
         });
     </script>
 </body>
